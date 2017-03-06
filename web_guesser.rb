@@ -1,12 +1,13 @@
 require 'sinatra'
 require 'sinatra/reloader'
 
-NUM = rand(100)
+NUM = rand(0..100)
 
 get '/' do
   guess = params["guess"].to_i
   message = guesser(guess)
-  erb :index, :locals => {:number => NUM, :message => message}
+  color = background_color_assigner(guess)
+  erb :index, :locals => {:number => NUM, :message => message, :color => color}
 
 end
 
@@ -21,5 +22,15 @@ end
       message = "Way too low!"
     elsif guess == NUM
       message = "You got it right! The secret number is #{NUM}."
+    end
+  end
+
+  def background_color_assigner(guess)
+    if (guess <= (NUM + 5) && guess > NUM) || (guess >= (NUM - 5) && guess < NUM)
+      color = "rgb(245, 231, 245)"
+    elsif guess > (NUM + 5) || guess < (NUM - 5)
+      color = "red"
+    elsif guess == NUM
+      color = "green"
     end
   end
